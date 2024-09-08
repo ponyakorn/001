@@ -18,7 +18,7 @@ def analyze_sentiment():
     try:
         # Extract the OpenAI API key and the text to analyze from the POST request
 
-        text = request.json.get("วันนี้กินอะไรดี")
+        text = request.json.get("text")
 
         # Set the OpenAI API key
         openai.api_key = os.getenv("OPENAI_API_KEY")
@@ -29,7 +29,7 @@ def analyze_sentiment():
             messages=[
                 {
                     "role": "system",
-                    "content": "สุ่มอาหารมาให้หน่อยได้ไหม",
+                    "content": "Analyze the sentiment of the following text:",
                 },
                 {"role": "user", "content": text},
             ],
@@ -38,6 +38,18 @@ def analyze_sentiment():
         # Extract the sentiment from the response
         sentiment_response = response["choices"][0]["message"]["content"].strip()
         # print(sentiment_response)
+
+        # Assuming that sentiment_response contains the sentiment in neg, neu, or pos format
+        if "neg" in sentiment_response.lower():
+            sentiment = "neg"
+        elif "neu" in sentiment_response.lower():
+            sentiment = "neu"
+        elif "pos" in sentiment_response.lower():
+            sentiment = "pos"
+        else:
+            sentiment = "unknown"
+
+        return jsonify({"sentiment": sentiment})
 
     except Exception as e:
         return jsonify({"error": str(e)}), 500
