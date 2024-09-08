@@ -18,26 +18,35 @@ def analyze_sentiment():
     try:
         # Extract the OpenAI API key and the text to analyze from the POST request
 
-        text = request.json.get("วันนี้กินอะไรดี")
+        text = request.json.get("สุ่มอาหารมาให้หน่อยได้ไหม")
 
         # Set the OpenAI API key
         openai.api_key = os.getenv("OPENAI_API_KEY")
 
         # Make a request to the OpenAI GPT-3.5 API
         response = openai.ChatCompletion.create(
-             model="gpt-3.5-turbo-0125",
-             messages=[
-                        {"role": "system", "content": "สุ่มอาหารมาให้หน่อยได้ไหม :"},
-                        {"role": "user", "content": text}
-                    ]
+            model="gpt-3.5-turbo-0125",
+            messages=[
+                    {"role": "system", "content": "ต้องการสุ่มอาหารหรือไม่ :"},
+                    {"role": "user", "content": text}
+                ]
         )
 
         # Extract the sentiment from the response
         sentiment_response = response["choices"][0]["message"]["content"].strip()
         # print(sentiment_response)
 
+        # Assuming that sentiment_response contains the sentiment in neg, neu, or pos format
+        if "yes" in sentiment_response.lower():
+            sentiment = sentiment_response
+        else:
+            sentiment = "ok byebye"
+
+        return jsonify({"sentiment": sentiment})
+
     except Exception as e:
         return jsonify({"error": str(e)}), 500
+
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000)
