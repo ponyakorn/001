@@ -18,7 +18,7 @@ def analyze_sentiment():
     try:
         # Extract the OpenAI API key and the text to analyze from the POST request
 
-        text = request.json.get("What kind of story do you want?")
+        text = request.json.get("วันนี้กินอะไรดี")
 
         # Set the OpenAI API key
         openai.api_key = os.getenv("OPENAI_API_KEY")
@@ -29,7 +29,7 @@ def analyze_sentiment():
             messages=[
                 {
                     "role": "system",
-                    "content": "Can you write a story for me?",
+                    "content": "สุ่มอาหารมาให้หน่อยได้ไหม",
                 },
                 {"role": "user", "content": text},
             ],
